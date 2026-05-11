@@ -76,4 +76,49 @@ tempo_reposicionar = None
 GOL_RECT = pygame.Rect(150, 150, 600, 300)
 
 
+DESTINOS_BOLA = [
+    (200, 170), (350, 160), (500, 160), (620, 170), (700, 180),  # alto
+    (180, 270), (320, 260), (450, 250), (570, 260), (700, 270),  # meio
+    (200, 370), (350, 360), (450, 350), (560, 360), (680, 370),  # baixo
+]
+
+contador_inicio = 0
+
+# Botoes dos personagens
+botao1 = pygame.Rect(130, 250, 160, 160)
+botao2 = pygame.Rect(370, 250, 160, 160)
+botao3 = pygame.Rect(610, 250, 160, 160)
+
+
+def escrever(texto, fonte, cor, x, y):
+    imagem_texto = fonte.render(texto, True, cor)
+    retangulo = imagem_texto.get_rect(center=(x, y))
+    TELA.blit(imagem_texto, retangulo)
+
+
+def desenhar_inicio():
+    TELA.blit(fundo_inicio, (0, 0))
+    escrever("Bem vindo!", FONTE_GRANDE, BRANCO, LARGURA // 2, ALTURA // 2)
+
+
+def desenhar_escolha_personagem():
+    TELA.blit(fundo_inicio, (0, 0))
+    escrever("Escolha seu goleiro", FONTE_MEDIA, BRANCO, LARGURA // 2, 100)
+
+    pygame.draw.rect(TELA, AZUL, botao1, border_radius=20)
+    pygame.draw.rect(TELA, VERDE, botao2, border_radius=20)
+    pygame.draw.rect(TELA, VERMELHO, botao3, border_radius=20)
+
+    TELA.blit(goleiros[0], (botao1.x + 10, botao1.y + 10))
+    TELA.blit(goleiros[1], (botao2.x + 10, botao2.y + 10))
+    TELA.blit(goleiros[2], (botao3.x + 10, botao3.y + 10))
+
+    escrever("Eduardo Sanches", FONTE_PEQUENA, BRANCO, botao1.centerx, botao1.top - 20)
+    escrever("Lucas Santana", FONTE_PEQUENA, BRANCO, botao2.centerx, botao2.top - 20)
+    escrever("Eduardo Melardi", FONTE_PEQUENA, BRANCO, botao3.centerx, botao3.top - 20)
+
+    escrever("Clique em uma das opções", FONTE_PEQUENA, PRETO, LARGURA // 2, 480)
+
+
+
 
