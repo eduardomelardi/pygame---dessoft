@@ -43,4 +43,37 @@ goleiros = [
     pygame.transform.scale(pygame.image.load("assets/GoleiroDudu.png").convert_alpha(), (140, 140)),
 ]
 
+goleiros_jogo = [
+    pygame.transform.scale(pygame.image.load("assets/GoleiroDuda.png").convert_alpha(), (100, 140)),
+    pygame.transform.scale(pygame.image.load("assets/GoleiroLucas.png").convert_alpha(), (100, 140)),
+    pygame.transform.scale(pygame.image.load("assets/GoleiroDudu.png").convert_alpha(), (100, 140)),
+]
+
+
+estado = "inicio"
+tempo_inicio = pygame.time.get_ticks()
+
+personagem_escolhido = None
+
+BOLA_INICIO_X = 415
+BOLA_INICIO_Y = 552
+GOLEIRO_INICIO_X = 400
+GOLEIRO_INICIO_Y = 310
+
+goleiro_x = float(GOLEIRO_INICIO_X)
+goleiro_y = float(GOLEIRO_INICIO_Y)
+VELOCIDADE_GOLEIRO = 5
+
+bola_x = float(BOLA_INICIO_X)
+bola_y = float(BOLA_INICIO_Y)
+bola_destino_x = float(BOLA_INICIO_X)
+bola_destino_y = float(BOLA_INICIO_Y)
+bola_movendo = False
+velocidade_bola = 9
+tempo_reset = None
+tempo_gol = None
+tempo_reposicionar = None
+GOL_RECT = pygame.Rect(150, 150, 600, 300)
+
+
 
