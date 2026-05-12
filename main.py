@@ -150,3 +150,23 @@ def atualizar_goleiro():
     if teclas[pygame.K_DOWN]:
         goleiro_y = min(GOLEIRO_INICIO_Y + 80, goleiro_y + VELOCIDADE_GOLEIRO)
 
+
+def desenhar_countdown():
+    TELA.fill(BRANCO)
+
+    tempo_atual = pygame.time.get_ticks()
+    tempo_passado = (tempo_atual - contador_inicio) // 1000
+    numero = 3 - tempo_passado
+
+    if numero > 0:
+        escrever(str(numero), FONTE_GRANDE, PRETO, LARGURA // 2, ALTURA // 2)
+    else:
+        escrever("Vai!", FONTE_GRANDE, PRETO, LARGURA // 2, ALTURA // 2)
+
+
+def iniciar_goleiro():
+    global goleiro_x, goleiro_y
+    goleiro_x = float(GOLEIRO_INICIO_X)
+    goleiro_y = float(GOLEIRO_INICIO_Y)
+
+
