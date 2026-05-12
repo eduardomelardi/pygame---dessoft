@@ -170,3 +170,26 @@ def iniciar_goleiro():
     goleiro_y = float(GOLEIRO_INICIO_Y)
 
 
+def atualizar_goleiro():
+    global goleiro_x, goleiro_y
+    teclas = pygame.key.get_pressed()
+    if teclas[pygame.K_LEFT]:
+        goleiro_x = max(0, goleiro_x - VELOCIDADE_GOLEIRO)
+    if teclas[pygame.K_RIGHT]:
+        goleiro_x = min(LARGURA - 150, goleiro_x + VELOCIDADE_GOLEIRO)
+    if teclas[pygame.K_UP]:
+        goleiro_y = max(200, goleiro_y - VELOCIDADE_GOLEIRO)
+    if teclas[pygame.K_DOWN]:
+        goleiro_y = min(GOLEIRO_INICIO_Y + 80, goleiro_y + VELOCIDADE_GOLEIRO)
+
+
+def sortear_chute():
+    global bola_destino_x, bola_destino_y, bola_movendo, tempo_reset
+    destino = random.choice(DESTINOS_BOLA)
+    bola_destino_x = float(destino[0])
+    bola_destino_y = float(destino[1])
+    bola_movendo = True
+    tempo_reset = None
+
+
+
