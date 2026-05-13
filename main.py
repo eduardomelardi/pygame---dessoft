@@ -123,6 +123,57 @@ def desenhar_inicio():
     escrever("Bem vindo!", FONTE_GRANDE, BRANCO, LARGURA // 2, ALTURA // 2)
 
 
+def desenhar_instrucoes():
+    TELA.blit(fundo_inicio, (0, 0))
+    overlay = pygame.Surface((LARGURA, ALTURA), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 160))
+    TELA.blit(overlay, (0, 0))
+
+    escrever("Como Jogar", FONTE_MEDIA, BRANCO, LARGURA // 2, 45)
+
+    # Caixa esquerda - Controles
+    pygame.draw.rect(TELA, (20, 20, 20, 200), pygame.Rect(30, 80, 390, 430), border_radius=12)
+    pygame.draw.rect(TELA, AZUL, pygame.Rect(30, 80, 390, 430), 2, border_radius=12)
+    escrever("Controles do Goleiro", FONTE_PEQUENA, AZUL, 225, 110)
+    linhas_controles = [
+        "Use as setas do teclado",
+        "para mover o goleiro:",
+        "",
+        "  Seta Esquerda  ->  mover esquerda",
+        "  Seta Direita   ->  mover direita",
+        "  Seta Cima      ->  subir",
+        "  Seta Baixo     ->  abaixar",
+        "",
+        "Tente interceptar a bola",
+        "antes que ela entre no gol!",
+    ]
+    for i, linha in enumerate(linhas_controles):
+        escrever(linha, FONTE_PEQUENA, BRANCO, 225, 150 + i * 32)
+
+    # Caixa direita - Fases
+    pygame.draw.rect(TELA, (20, 20, 20, 200), pygame.Rect(480, 80, 390, 430), border_radius=12)
+    pygame.draw.rect(TELA, VERDE, pygame.Rect(480, 80, 390, 430), 2, border_radius=12)
+    escrever("Fases do Jogo", FONTE_PEQUENA, VERDE, 675, 110)
+    linhas_fases = [
+        "O jogo tem 3 fases com",
+        "5 chutes cada.",
+        "",
+        "Para avan\u00e7ar de fase voce",
+        "precisa defender mais",
+        "do que levar gols.",
+        "",
+        "  Fase 1  ->  bola normal",
+        "  Fase 2  ->  bola mais rapida",
+        "              e nos cantos",
+        "  Fase Final -> bola muito",
+        "              rapida, extremos",
+    ]
+    for i, linha in enumerate(linhas_fases):
+        escrever(linha, FONTE_PEQUENA, BRANCO, 675, 150 + i * 32)
+
+    escrever("Pressione ENTER para continuar", FONTE_PEQUENA, CINZA, LARGURA // 2, 540)
+
+
 def desenhar_escolha_personagem():
     TELA.blit(fundo_inicio, (0, 0))
     escrever("Escolha seu goleiro", FONTE_MEDIA, BRANCO, LARGURA // 2, 100)
@@ -309,10 +360,14 @@ while rodando:
             rodando = False
 
         if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_RETURN and estado == "instrucoes":
+                estado = "escolha"
             if evento.key == pygame.K_ESCAPE:
-                if estado == "escolha":
+                if estado == "instrucoes":
                     estado = "inicio"
                     tempo_inicio = pygame.time.get_ticks()
+                elif estado == "escolha":
+                    estado = "instrucoes"
                 elif estado == "countdown":
                     estado = "escolha"
                 elif estado == "jogo":
@@ -371,7 +426,10 @@ while rodando:
     if estado == "inicio":
         desenhar_inicio()
         if pygame.time.get_ticks() - tempo_inicio >= 3000:
-            estado = "escolha"
+            estado = "instrucoes"
+
+    elif estado == "instrucoes":
+        desenhar_instrucoes()
 
     elif estado == "escolha":
         desenhar_escolha_personagem()
