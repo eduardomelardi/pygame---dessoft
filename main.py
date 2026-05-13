@@ -151,38 +151,6 @@ def atualizar_goleiro():
         goleiro_y = min(GOLEIRO_INICIO_Y + 80, goleiro_y + VELOCIDADE_GOLEIRO)
 
 
-def desenhar_countdown():
-    TELA.fill(BRANCO)
-
-    tempo_atual = pygame.time.get_ticks()
-    tempo_passado = (tempo_atual - contador_inicio) // 1000
-    numero = 3 - tempo_passado
-
-    if numero > 0:
-        escrever(str(numero), FONTE_GRANDE, PRETO, LARGURA // 2, ALTURA // 2)
-    else:
-        escrever("Vai!", FONTE_GRANDE, PRETO, LARGURA // 2, ALTURA // 2)
-
-
-def iniciar_goleiro():
-    global goleiro_x, goleiro_y
-    goleiro_x = float(GOLEIRO_INICIO_X)
-    goleiro_y = float(GOLEIRO_INICIO_Y)
-
-
-def atualizar_goleiro():
-    global goleiro_x, goleiro_y
-    teclas = pygame.key.get_pressed()
-    if teclas[pygame.K_LEFT]:
-        goleiro_x = max(0, goleiro_x - VELOCIDADE_GOLEIRO)
-    if teclas[pygame.K_RIGHT]:
-        goleiro_x = min(LARGURA - 150, goleiro_x + VELOCIDADE_GOLEIRO)
-    if teclas[pygame.K_UP]:
-        goleiro_y = max(200, goleiro_y - VELOCIDADE_GOLEIRO)
-    if teclas[pygame.K_DOWN]:
-        goleiro_y = min(GOLEIRO_INICIO_Y + 80, goleiro_y + VELOCIDADE_GOLEIRO)
-
-
 def sortear_chute():
     global bola_destino_x, bola_destino_y, bola_movendo, tempo_reset
     destino = random.choice(DESTINOS_BOLA)
@@ -209,7 +177,7 @@ def mover_bola():
 
     dx = bola_destino_x - bola_x
     dy = bola_destino_y - bola_y
-    distancia = (dx * 2 + dy * 2) ** 0.5
+    distancia = (dx**2 + dy**2) ** 0.5
 
     if distancia <= velocidade_bola:
         bola_x = bola_destino_x
