@@ -223,3 +223,24 @@ def mover_bola():
     else:
         bola_x += velocidade_bola * dx / distancia
         bola_y += velocidade_bola * dy / distancia
+
+
+    BORDA = 15
+    bola_cx = bola_x + 35
+    bola_cy = bola_y + 23
+    g_l = goleiro_x
+    g_r = goleiro_x + 100
+    g_t = goleiro_y
+    g_b = goleiro_y + 140
+
+    dentro = g_l <= bola_cx <= g_r and g_t <= bola_cy <= g_b
+    na_borda = (
+        bola_cx <= g_l + BORDA or
+        bola_cx >= g_r - BORDA or
+        bola_cy <= g_t + BORDA
+    )
+
+    if dentro and na_borda:
+        bola_destino_x = bola_x + (bola_cx - (goleiro_x + 50)) * 1.5
+        bola_destino_y = float(BOLA_INICIO_Y)
+        bola_movendo = True
