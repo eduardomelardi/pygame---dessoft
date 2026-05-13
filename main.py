@@ -193,3 +193,33 @@ def sortear_chute():
 
 
 
+def desenhar_jogo():
+    TELA.blit(campo, (0, 0))
+    if personagem_escolhido is not None:
+        goleiro_img = goleiros_jogo[personagem_escolhido - 1]
+        TELA.blit(goleiro_img, (int(goleiro_x), int(goleiro_y)))
+    TELA.blit(bola_img, (int(bola_x), int(bola_y)))
+    escrever("Use as setas para mover o goleiro", FONTE_PEQUENA, BRANCO, LARGURA // 2, 40)
+    if tempo_gol:
+        escrever("Gooolll!", FONTE_GOL, VERMELHO, LARGURA // 2, ALTURA // 2)
+
+
+def mover_bola():
+    global bola_x, bola_y, bola_movendo, bola_destino_x, bola_destino_y, tempo_reset, tempo_gol
+
+    dx = bola_destino_x - bola_x
+    dy = bola_destino_y - bola_y
+    distancia = (dx * 2 + dy * 2) ** 0.5
+
+    if distancia <= velocidade_bola:
+        bola_x = bola_destino_x
+        bola_y = bola_destino_y
+        bola_movendo = False
+        if GOL_RECT.collidepoint(int(bola_destino_x), int(bola_destino_y)):
+            tempo_gol = pygame.time.get_ticks()
+        else:
+            tempo_reset = pygame.time.get_ticks()
+        return
+    else:
+        bola_x += velocidade_bola * dx / distancia
+        bola_y += velocidade_bola * dy / distancia
