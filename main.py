@@ -153,23 +153,21 @@ def desenhar_instrucoes():
     # Caixa direita - Fases
     pygame.draw.rect(TELA, (20, 20, 20, 200), pygame.Rect(480, 80, 390, 430), border_radius=12)
     pygame.draw.rect(TELA, VERDE, pygame.Rect(480, 80, 390, 430), 2, border_radius=12)
-    escrever("Fases do Jogo", FONTE_PEQUENA, VERDE, 675, 110)
+    escrever("Fases do Jogo", FONTE_PEQUENA, VERDE, 675, 108)
     linhas_fases = [
-        "O jogo tem 3 fases com",
-        "5 chutes cada.",
+        "O jogo tem 3 fases,",
+        "5 chutes por fase.",
+        "Defenda mais do que",
+        "leve gols para avancar.",
         "",
-        "Para avan\u00e7ar de fase voce",
-        "precisa defender mais",
-        "do que levar gols.",
-        "",
-        "  Fase 1  ->  bola normal",
-        "  Fase 2  ->  bola mais rapida",
-        "              e nos cantos",
-        "  Fase Final -> bola muito",
-        "              rapida, extremos",
+        "Fase 1: bola normal",
+        "Fase 2: bola mais rapida",
+        "        e nos cantos",
+        "Fase Final: bola muito",
+        "        rapida, extremos",
     ]
     for i, linha in enumerate(linhas_fases):
-        escrever(linha, FONTE_PEQUENA, BRANCO, 675, 150 + i * 32)
+        escrever(linha, FONTE_PEQUENA, BRANCO, 675, 140 + i * 34)
 
     escrever("Pressione ENTER para continuar", FONTE_PEQUENA, CINZA, LARGURA // 2, 540)
 
