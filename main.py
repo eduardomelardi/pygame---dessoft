@@ -75,6 +75,11 @@ tempo_gol = None
 tempo_reposicionar = None
 GOL_RECT = pygame.Rect(150, 150, 600, 300)
 
+gols = 0
+defesas = 0
+chutes_total = 0
+tempo_fim = None
+
 
 DESTINOS_BOLA = [
     (200, 170), (350, 160), (500, 160), (620, 170), (700, 180),  # alto
@@ -168,12 +173,25 @@ def desenhar_jogo():
         TELA.blit(goleiro_img, (int(goleiro_x), int(goleiro_y)))
     TELA.blit(bola_img, (int(bola_x), int(bola_y)))
     escrever("Use as setas para mover o goleiro", FONTE_PEQUENA, BRANCO, LARGURA // 2, 40)
+    escrever(f"Defesas: {defesas}  |  Gols: {gols}  |  Chute: {chutes_total}/10", FONTE_PEQUENA, BRANCO, LARGURA // 2, 125)
     if tempo_gol:
         escrever("Gooolll!", FONTE_GOL, VERMELHO, LARGURA // 2, ALTURA // 2)
 
 
+def desenhar_fim():
+    TELA.blit(fundo_inicio, (0, 0))
+    escrever(f"Defesas: {defesas}  |  Gols: {gols}", FONTE_MEDIA, BRANCO, LARGURA // 2, 200)
+    if defesas > 5:
+        escrever("Você ganhou!", FONTE_GRANDE, VERDE, LARGURA // 2, ALTURA // 2)
+    elif defesas < 5:
+        escrever("Você perdeu!", FONTE_GRANDE, VERMELHO, LARGURA // 2, ALTURA // 2)
+    else:
+        escrever("Empatou!", FONTE_GRANDE, CINZA, LARGURA // 2, ALTURA // 2)
+    escrever("Pressione ENTER para jogar novamente", FONTE_PEQUENA, BRANCO, LARGURA // 2, 420)
+
+
 def mover_bola():
-    global bola_x, bola_y, bola_movendo, bola_destino_x, bola_destino_y, tempo_reset, tempo_gol
+    global bola_x, bola_y, bola_movendo, bola_destino_x, bola_destino_y, tempo_reset, tempo_gol, gols, defesas, chutes_total, estado, tempo_fim
 
     dx = bola_destino_x - bola_x
     dy = bola_destino_y - bola_y
@@ -184,8 +202,10 @@ def mover_bola():
         bola_y = bola_destino_y
         bola_movendo = False
         if GOL_RECT.collidepoint(int(bola_destino_x), int(bola_destino_y)):
+            gols += 1
             tempo_gol = pygame.time.get_ticks()
         else:
+            defesas += 1
             tempo_reset = pygame.time.get_ticks()
         return
     else:
@@ -215,7 +235,7 @@ def mover_bola():
 
 
 def resetar_bola():
-    global bola_x, bola_y, bola_destino_x, bola_destino_y, bola_movendo, tempo_reset, tempo_gol, tempo_reposicionar
+    global bola_x, bola_y, bola_destino_x, bola_destino_y, bola_movendo, tempo_reset, tempo_gol, tempo_reposicionar, chutes_total, estado, tempo_fim
     bola_x = float(BOLA_INICIO_X)
     bola_y = float(BOLA_INICIO_Y)
     bola_destino_x = float(BOLA_INICIO_X)
@@ -223,7 +243,12 @@ def resetar_bola():
     bola_movendo = False
     tempo_reset = None
     tempo_gol = None
-    tempo_reposicionar = pygame.time.get_ticks()
+    chutes_total += 1
+    if chutes_total >= 10:
+        estado = "fim"
+        tempo_fim = pygame.time.get_ticks()
+    else:
+        tempo_reposicionar = pygame.time.get_ticks()
 
 
 
@@ -244,6 +269,13 @@ while rodando:
                     estado = "escolha"
                 elif estado == "jogo":
                     estado = "escolha"
+            if evento.key == pygame.K_RETURN and estado == "fim":
+                gols = 0
+                defesas = 0
+                chutes_total = 0
+                tempo_fim = None
+                personagem_escolhido = None
+                estado = "escolha"
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
@@ -297,6 +329,9 @@ while rodando:
             tempo_reposicionar = None
             sortear_chute()
         desenhar_jogo()
+
+    elif estado == "fim":
+        desenhar_fim()
 
     pygame.display.update()
 
