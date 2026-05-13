@@ -80,12 +80,29 @@ defesas = 0
 chutes_total = 0
 tempo_fim = None
 
+fase_atual = 1
 
 DESTINOS_BOLA = [
     (200, 170), (350, 160), (500, 160), (620, 170), (700, 180),  # alto
     (180, 270), (320, 260), (450, 250), (570, 260), (700, 270),  # meio
     (200, 370), (350, 360), (450, 350), (560, 360), (680, 370),  # baixo
 ]
+
+# Fase 2: mais nos cantos
+DESTINOS_FASE2 = [
+    (165, 165), (680, 165), (165, 165), (680, 165), (450, 160),  # cantos altos
+    (165, 270), (700, 270), (165, 270), (700, 270), (450, 250),  # cantos meio
+    (165, 375), (700, 375), (165, 375), (700, 375), (450, 350),  # cantos baixo
+]
+
+# Fase 3 (final): extremos
+DESTINOS_FASE3 = [
+    (155, 158), (695, 158), (155, 158), (695, 158), (450, 155),
+    (155, 265), (710, 265), (155, 265), (710, 265), (450, 248),
+    (155, 378), (710, 378), (155, 378), (710, 378), (450, 348),
+]
+
+VELOCIDADE_POR_FASE = {1: 9, 2: 13, 3: 17}
 
 contador_inicio = 0
 
@@ -157,8 +174,14 @@ def atualizar_goleiro():
 
 
 def sortear_chute():
-    global bola_destino_x, bola_destino_y, bola_movendo, tempo_reset
-    destino = random.choice(DESTINOS_BOLA)
+    global bola_destino_x, bola_destino_y, bola_movendo, tempo_reset, velocidade_bola
+    if fase_atual == 1:
+        destino = random.choice(DESTINOS_BOLA)
+    elif fase_atual == 2:
+        destino = random.choice(DESTINOS_FASE2)
+    else:
+        destino = random.choice(DESTINOS_FASE3)
+    velocidade_bola = VELOCIDADE_POR_FASE[fase_atual]
     bola_destino_x = float(destino[0])
     bola_destino_y = float(destino[1])
     bola_movendo = True
@@ -166,32 +189,57 @@ def sortear_chute():
 
 
 
+def nome_fase():
+    if fase_atual == 1:
+        return "Fase 1"
+    elif fase_atual == 2:
+        return "Fase 2"
+    else:
+        return "Fase Final"
+
+
 def desenhar_jogo():
     TELA.blit(campo, (0, 0))
+    # Caixa de fase no topo
+    caixa = pygame.Rect(LARGURA // 2 - 80, 8, 160, 34)
+    pygame.draw.rect(TELA, PRETO, caixa, border_radius=8)
+    pygame.draw.rect(TELA, BRANCO, caixa, 2, border_radius=8)
+    escrever(nome_fase(), FONTE_PEQUENA, BRANCO, LARGURA // 2, 25)
     if personagem_escolhido is not None:
         goleiro_img = goleiros_jogo[personagem_escolhido - 1]
         TELA.blit(goleiro_img, (int(goleiro_x), int(goleiro_y)))
     TELA.blit(bola_img, (int(bola_x), int(bola_y)))
-    escrever("Use as setas para mover o goleiro", FONTE_PEQUENA, BRANCO, LARGURA // 2, 40)
-    escrever(f"Defesas: {defesas}  |  Gols: {gols}  |  Chute: {chutes_total}/10", FONTE_PEQUENA, BRANCO, LARGURA // 2, 125)
+    escrever("Use as setas para mover o goleiro", FONTE_PEQUENA, BRANCO, LARGURA // 2, 55)
+    escrever(f"Defesas: {defesas}  |  Gols: {gols}  |  Chute: {chutes_total}/5", FONTE_PEQUENA, BRANCO, LARGURA // 2, 125)
     if tempo_gol:
         escrever("Gooolll!", FONTE_GOL, VERMELHO, LARGURA // 2, ALTURA // 2)
+
+
+def desenhar_fim_fase():
+    TELA.blit(fundo_inicio, (0, 0))
+    escrever(nome_fase(), FONTE_MEDIA, BRANCO, LARGURA // 2, 150)
+    escrever(f"Defesas: {defesas}  |  Gols: {gols}", FONTE_MEDIA, BRANCO, LARGURA // 2, 220)
+    if defesas > gols:
+        if fase_atual < 3:
+            escrever("Você avançou!", FONTE_GRANDE, VERDE, LARGURA // 2, ALTURA // 2 - 30)
+            escrever("Pressione ENTER para a próxima fase", FONTE_PEQUENA, BRANCO, LARGURA // 2, 420)
+        else:
+            escrever("Você venceu o jogo!", FONTE_GRANDE, VERDE, LARGURA // 2, ALTURA // 2 - 30)
+            escrever("Pressione ENTER para jogar novamente", FONTE_PEQUENA, BRANCO, LARGURA // 2, 420)
+    else:
+        escrever("Você perdeu!", FONTE_GRANDE, VERMELHO, LARGURA // 2, ALTURA // 2 - 30)
+        escrever("Pressione ENTER para jogar novamente", FONTE_PEQUENA, BRANCO, LARGURA // 2, 420)
 
 
 def desenhar_fim():
     TELA.blit(fundo_inicio, (0, 0))
     escrever(f"Defesas: {defesas}  |  Gols: {gols}", FONTE_MEDIA, BRANCO, LARGURA // 2, 200)
-    if defesas > 5:
-        escrever("Você ganhou!", FONTE_GRANDE, VERDE, LARGURA // 2, ALTURA // 2)
-    elif defesas < 5:
-        escrever("Você perdeu!", FONTE_GRANDE, VERMELHO, LARGURA // 2, ALTURA // 2)
-    else:
-        escrever("Empatou!", FONTE_GRANDE, CINZA, LARGURA // 2, ALTURA // 2)
+    escrever("Você venceu o jogo!", FONTE_GRANDE, VERDE, LARGURA // 2, ALTURA // 2)
     escrever("Pressione ENTER para jogar novamente", FONTE_PEQUENA, BRANCO, LARGURA // 2, 420)
 
 
 def mover_bola():
-    global bola_x, bola_y, bola_movendo, bola_destino_x, bola_destino_y, tempo_reset, tempo_gol, gols, defesas, chutes_total, estado, tempo_fim
+    global bola_x, bola_y, bola_movendo, bola_destino_x, bola_destino_y, tempo_reset, tempo_gol, gols, defesas, chutes_total, estado, tempo_fim, fase_atual
 
     dx = bola_destino_x - bola_x
     dy = bola_destino_y - bola_y
@@ -235,7 +283,7 @@ def mover_bola():
 
 
 def resetar_bola():
-    global bola_x, bola_y, bola_destino_x, bola_destino_y, bola_movendo, tempo_reset, tempo_gol, tempo_reposicionar, chutes_total, estado, tempo_fim
+    global bola_x, bola_y, bola_destino_x, bola_destino_y, bola_movendo, tempo_reset, tempo_gol, tempo_reposicionar, chutes_total, estado, tempo_fim, fase_atual
     bola_x = float(BOLA_INICIO_X)
     bola_y = float(BOLA_INICIO_Y)
     bola_destino_x = float(BOLA_INICIO_X)
@@ -244,8 +292,8 @@ def resetar_bola():
     tempo_reset = None
     tempo_gol = None
     chutes_total += 1
-    if chutes_total >= 10:
-        estado = "fim"
+    if chutes_total >= 5:
+        estado = "fim_fase"
         tempo_fim = pygame.time.get_ticks()
     else:
         tempo_reposicionar = pygame.time.get_ticks()
@@ -269,7 +317,27 @@ while rodando:
                     estado = "escolha"
                 elif estado == "jogo":
                     estado = "escolha"
+            if evento.key == pygame.K_RETURN and estado == "fim_fase":
+                if defesas > gols and fase_atual < 3:
+                    fase_atual += 1
+                    gols = 0
+                    defesas = 0
+                    chutes_total = 0
+                    tempo_fim = None
+                    estado = "countdown"
+                    contador_inicio = pygame.time.get_ticks()
+                    iniciar_goleiro()
+                else:
+                    # Perdeu ou completou fase 3 -> reinicia tudo
+                    fase_atual = 1
+                    gols = 0
+                    defesas = 0
+                    chutes_total = 0
+                    tempo_fim = None
+                    personagem_escolhido = None
+                    estado = "escolha"
             if evento.key == pygame.K_RETURN and estado == "fim":
+                fase_atual = 1
                 gols = 0
                 defesas = 0
                 chutes_total = 0
@@ -329,6 +397,9 @@ while rodando:
             tempo_reposicionar = None
             sortear_chute()
         desenhar_jogo()
+
+    elif estado == "fim_fase":
+        desenhar_fim_fase()
 
     elif estado == "fim":
         desenhar_fim()
