@@ -192,4 +192,12 @@ def sortear_chute():
     tempo_reset = None
 
 
-
+def desenhar_jogo():
+    TELA.blit(campo, (0, 0))
+    if personagem_escolhido is not None:
+        goleiro_img = goleiros_jogo[personagem_escolhido - 1]
+        TELA.blit(goleiro_img, (int(goleiro_x), int(goleiro_y)))
+    TELA.blit(bola_img, (int(bola_x), int(bola_y)))
+    escrever("Use as setas para mover o goleiro", FONTE_PEQUENA, BRANCO, LARGURA // 2, 40)
+    if tempo_gol:
+        escrever("Gooolll!", FONTE_GOL, VERMELHO, LARGURA // 2, ALTURA // 2)
