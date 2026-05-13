@@ -244,3 +244,93 @@ def mover_bola():
         bola_destino_x = bola_x + (bola_cx - (goleiro_x + 50)) * 1.5
         bola_destino_y = float(BOLA_INICIO_Y)
         bola_movendo = True
+
+
+def resetar_bola():
+    global bola_x, bola_y, bola_destino_x, bola_destino_y, bola_movendo, tempo_reset, tempo_gol, tempo_reposicionar
+    bola_x = float(BOLA_INICIO_X)
+    bola_y = float(BOLA_INICIO_Y)
+    bola_destino_x = float(BOLA_INICIO_X)
+    bola_destino_y = float(BOLA_INICIO_Y)
+    bola_movendo = False
+    tempo_reset = None
+    tempo_gol = None
+    tempo_reposicionar = pygame.time.get_ticks()
+
+
+
+rodando = True
+while rodando:
+    RELOGIO.tick(FPS)
+
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            rodando = False
+
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_ESCAPE:
+                if estado == "escolha":
+                    estado = "inicio"
+                    tempo_inicio = pygame.time.get_ticks()
+                elif estado == "countdown":
+                    estado = "escolha"
+                elif estado == "jogo":
+                    estado = "escolha"
+
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            mouse = pygame.mouse.get_pos()
+
+            if estado == "escolha":
+                if botao1.collidepoint(mouse):
+                    personagem_escolhido = 1
+                    estado = "countdown"
+                    contador_inicio = pygame.time.get_ticks()
+
+                elif botao2.collidepoint(mouse):
+                    personagem_escolhido = 2
+                    estado = "countdown"
+                    contador_inicio = pygame.time.get_ticks()
+
+                elif botao3.collidepoint(mouse):
+                    personagem_escolhido = 3
+                    estado = "countdown"
+                    contador_inicio = pygame.time.get_ticks()
+
+            elif estado == "jogo":
+                pass
+
+   
+    if estado == "inicio":
+        desenhar_inicio()
+        if pygame.time.get_ticks() - tempo_inicio >= 3000:
+            estado = "escolha"
+
+    elif estado == "escolha":
+        desenhar_escolha_personagem()
+
+    elif estado == "countdown":
+        desenhar_countdown()
+        if pygame.time.get_ticks() - contador_inicio >= 4000:
+            estado = "jogo"
+            iniciar_goleiro()
+            tempo_reposicionar = pygame.time.get_ticks()
+
+    elif estado == "jogo":
+        atualizar_goleiro()
+        if bola_movendo and not tempo_gol:
+            mover_bola()
+        if tempo_gol and pygame.time.get_ticks() - tempo_gol >= 1500:
+            resetar_bola()
+            iniciar_goleiro()
+        if tempo_reset and pygame.time.get_ticks() - tempo_reset >= 2000:
+            resetar_bola()
+            iniciar_goleiro()
+        if tempo_reposicionar and pygame.time.get_ticks() - tempo_reposicionar >= 1000:
+            tempo_reposicionar = None
+            sortear_chute()
+        desenhar_jogo()
+
+    pygame.display.update()
+
+pygame.quit()
+sys.exit()
