@@ -254,6 +254,10 @@ def desenhar_jogo():
     pygame.draw.rect(TELA, PRETO, caixa, border_radius=8)
     pygame.draw.rect(TELA, BRANCO, caixa, 2, border_radius=8)
     escrever(nome_fase(), FONTE_PEQUENA, BRANCO, LARGURA // 2, 25)
+    if bola_movendo:
+        sombra = bola_img.copy()
+        sombra.set_alpha(100)
+        TELA.blit(sombra, (int(bola_destino_x), int(bola_destino_y)))
     if personagem_escolhido is not None:
         goleiro_img = goleiros_jogo[personagem_escolhido - 1]
         TELA.blit(goleiro_img, (int(goleiro_x), int(goleiro_y)))
