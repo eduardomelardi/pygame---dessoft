@@ -14,10 +14,10 @@ ALTURA = 720
 FPS = 60
 
 
-TELA_REAL = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-LARGURA_REAL = TELA_REAL.get_width()
-ALTURA_REAL = TELA_REAL.get_height()
-TELA = pygame.Surface((LARGURA, ALTURA))
+TELA_REAL = pygame.display.set_mode((LARGURA, ALTURA))
+LARGURA_REAL = LARGURA
+ALTURA_REAL = ALTURA
+TELA = TELA_REAL
 pygame.display.set_caption("Jogo de Penalti")
 RELOGIO = pygame.time.Clock()
 
@@ -109,7 +109,7 @@ DESTINOS_FASE3 = [
     (327, 425), (910, 425), (327, 425), (910, 425), (640, 420),
 ]
 
-VELOCIDADE_POR_FASE = {1: 7.5, 2: 10, 3: 12}
+VELOCIDADE_POR_FASE = {1: 8, 2: 10.5, 3: 12}
 
 contador_inicio = 0
 
@@ -395,11 +395,7 @@ while rodando:
                 estado = "escolha"
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
-            mouse_raw = pygame.mouse.get_pos()
-            mouse = (
-                mouse_raw[0] * LARGURA // LARGURA_REAL,
-                mouse_raw[1] * ALTURA // ALTURA_REAL,
-            )
+            mouse = pygame.mouse.get_pos()
 
             if estado == "escolha":
                 if botao1.collidepoint(mouse):
@@ -459,7 +455,6 @@ while rodando:
     elif estado == "fim":
         desenhar_fim()
 
-    pygame.transform.scale(TELA, (LARGURA_REAL, ALTURA_REAL), TELA_REAL)
     pygame.display.update()
 
 pygame.quit()
