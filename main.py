@@ -14,7 +14,12 @@ ALTURA = 600
 FPS = 60
 
 
-TELA = pygame.display.set_mode((LARGURA, ALTURA))
+TELA_REAL = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+LARGURA_REAL = TELA_REAL.get_width()
+ALTURA_REAL = TELA_REAL.get_height()
+OFFSET_X = (LARGURA_REAL - LARGURA) // 2
+OFFSET_Y = (ALTURA_REAL - ALTURA) // 2
+TELA = pygame.Surface((LARGURA, ALTURA))
 pygame.display.set_caption("Jogo de Penalti")
 RELOGIO = pygame.time.Clock()
 
@@ -307,11 +312,11 @@ def mover_bola():
         bola_y = bola_destino_y
         bola_movendo = False
 
+        bola_rect = pygame.Rect(int(bola_destino_x), int(bola_destino_y), 70, 47)
         bola_cx = bola_destino_x + 35
-        bola_cy = bola_destino_y + 23
         goleiro_rect = pygame.Rect(int(goleiro_x), int(goleiro_y), 100, 140)
 
-        if goleiro_rect.collidepoint(int(bola_cx), int(bola_cy)):
+        if bola_rect.colliderect(goleiro_rect):
             bola_destino_x = bola_x + (bola_cx - (goleiro_x + 50)) * 1.5
             bola_destino_y = float(BOLA_INICIO_Y)
             bola_movendo = True
@@ -456,6 +461,8 @@ while rodando:
     elif estado == "fim":
         desenhar_fim()
 
+    TELA_REAL.fill(PRETO)
+    TELA_REAL.blit(TELA, (OFFSET_X, OFFSET_Y))
     pygame.display.update()
 
 pygame.quit()
