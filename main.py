@@ -5,6 +5,9 @@ import math
 
 pygame.init()
 
+pygame.mixer.music.load("assets/McBilly-mc-guime-original-mc-guime-pais-do-futebol-part-emicida-2014-c27bdb_[cut_181sec].mp3")
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
 
 LARGURA = 900
 ALTURA = 600
