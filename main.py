@@ -65,7 +65,7 @@ GOLEIRO_INICIO_Y = 310
 
 goleiro_x = float(GOLEIRO_INICIO_X)
 goleiro_y = float(GOLEIRO_INICIO_Y)
-VELOCIDADE_GOLEIRO = 5
+VELOCIDADE_GOLEIRO = 6.5
 
 bola_x = float(BOLA_INICIO_X)
 bola_y = float(BOLA_INICIO_Y)
@@ -306,37 +306,25 @@ def mover_bola():
         bola_x = bola_destino_x
         bola_y = bola_destino_y
         bola_movendo = False
-        if GOL_RECT.collidepoint(int(bola_destino_x), int(bola_destino_y)):
+
+        bola_cx = bola_destino_x + 35
+        bola_cy = bola_destino_y + 23
+        goleiro_rect = pygame.Rect(int(goleiro_x), int(goleiro_y), 100, 140)
+
+        if goleiro_rect.collidepoint(int(bola_cx), int(bola_cy)):
+            bola_destino_x = bola_x + (bola_cx - (goleiro_x + 50)) * 1.5
+            bola_destino_y = float(BOLA_INICIO_Y)
+            bola_movendo = True
+        elif GOL_RECT.collidepoint(int(bola_destino_x), int(bola_destino_y)):
             gols += 1
             tempo_gol = pygame.time.get_ticks()
         else:
             defesas += 1
             tempo_reset = pygame.time.get_ticks()
         return
-    else:
-        bola_x += velocidade_bola * dx / distancia
-        bola_y += velocidade_bola * dy / distancia
 
-
-    BORDA = 15
-    bola_cx = bola_x + 35
-    bola_cy = bola_y + 23
-    g_l = goleiro_x
-    g_r = goleiro_x + 100
-    g_t = goleiro_y
-    g_b = goleiro_y + 140
-
-    dentro = g_l <= bola_cx <= g_r and g_t <= bola_cy <= g_b
-    na_borda = (
-        bola_cx <= g_l + BORDA or
-        bola_cx >= g_r - BORDA or
-        bola_cy <= g_t + BORDA
-    )
-
-    if dentro and na_borda:
-        bola_destino_x = bola_x + (bola_cx - (goleiro_x + 50)) * 1.5
-        bola_destino_y = float(BOLA_INICIO_Y)
-        bola_movendo = True
+    bola_x += velocidade_bola * dx / distancia
+    bola_y += velocidade_bola * dy / distancia
 
 
 def resetar_bola():
